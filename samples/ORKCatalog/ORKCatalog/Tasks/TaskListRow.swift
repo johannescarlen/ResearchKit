@@ -1061,12 +1061,14 @@ enum TaskListRow: Int, CustomStringConvertible {
         let textChoiceOneText = NSLocalizedString("Choice 1", comment: "")
         let textChoiceTwoText = NSLocalizedString("Choice 2", comment: "")
         let textChoiceThreeText = NSLocalizedString("Choice 3", comment: "")
+        let textChoiceFourText = NSLocalizedString("Other", comment: "")
         
         // The text to display can be separate from the value coded for each choice:
         let textChoices = [
             ORKTextChoice(text: textChoiceOneText, value: "choice_1" as NSCoding & NSCopying & NSObjectProtocol),
             ORKTextChoice(text: textChoiceTwoText, value: "choice_2" as NSCoding & NSCopying & NSObjectProtocol),
-            ORKTextChoice(text: textChoiceThreeText, value: "choice_3" as NSCoding & NSCopying & NSObjectProtocol)
+            ORKTextChoice(text: textChoiceThreeText, value: "choice_3" as NSCoding & NSCopying & NSObjectProtocol),
+            ORKTextChoiceOther.choice(withText: textChoiceFourText, detailText: nil, value: "choice_4" as NSCoding & NSCopying & NSObjectProtocol, exclusive: true, textViewPlaceholderText: "enter additional information")
         ]
         
         let answerFormat = ORKAnswerFormat.choiceAnswerFormat(with: .singleChoice, textChoices: textChoices)
@@ -1159,6 +1161,7 @@ enum TaskListRow: Int, CustomStringConvertible {
         answerFormatDomain.autocapitalizationType = UITextAutocapitalizationType.none
         answerFormatDomain.autocorrectionType = UITextAutocorrectionType.no
         answerFormatDomain.spellCheckingType = UITextSpellCheckingType.no
+        answerFormatDomain.textContentType = UITextContentType.URL
         let stepDomain = ORKQuestionStep(identifier: String(describing:Identifier.validatedTextQuestionStepDomain), title: NSLocalizedString("Validated Text", comment: ""), question: NSLocalizedString("URL", comment: ""), answer: answerFormatDomain)
         stepDomain.text = exampleDetailText
         
@@ -1393,8 +1396,8 @@ enum TaskListRow: Int, CustomStringConvertible {
             override func resendEmailButtonTapped() {
                 let alertTitle = NSLocalizedString("Resend Verification Email", comment: "")
                 let alertMessage = NSLocalizedString("Button tapped", comment: "")
-                let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: UIAlertControllerStyle.alert)
-                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: UIAlertController.Style.alert)
+                alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
             }
         }
@@ -1418,8 +1421,8 @@ enum TaskListRow: Int, CustomStringConvertible {
             override func forgotPasswordButtonTapped() {
                 let alertTitle = NSLocalizedString("Forgot password?", comment: "")
                 let alertMessage = NSLocalizedString("Button tapped", comment: "")
-                let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: UIAlertControllerStyle.alert)
-                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+                let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: UIAlertController.Style.alert)
+                alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
             }
         }
@@ -1454,7 +1457,7 @@ enum TaskListRow: Int, CustomStringConvertible {
         */
         let passcodeConsentStep = ORKPasscodeStep(identifier: String(describing:Identifier.passcodeStep))
         passcodeConsentStep.title = NSLocalizedString("Passcode", comment: "")
-        return ORKOrderedTask(identifier: String(describing:Identifier.passcodeStep), steps: [passcodeConsentStep])
+        return ORKOrderedTask(identifier: String(describing:Identifier.passcodeTask), steps: [passcodeConsentStep])
     }
     
     /// This task presents the Audio pre-defined active task.

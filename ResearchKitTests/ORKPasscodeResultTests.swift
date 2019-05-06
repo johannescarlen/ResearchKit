@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2015, Apple Inc. All rights reserved.
+ Copyright (c) 2019, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -28,16 +28,37 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import XCTest
+@testable import ResearchKit
 
-@import UIKit;
+class ORKPasscodeResultTests: XCTestCase {
+    var result: ORKPasscodeResult!
+    var identifier: String!
+    let date = Date()
+    
+    override func setUp() {
+        identifier = "RESULT"
+        result = ORKPasscodeResult(identifier: identifier)
+        result.isPasscodeSaved = true
+        result.isTouchIdEnabled = false
+    }
 
-
-NS_ASSUME_NONNULL_BEGIN
-
-@interface ORKLineGraphAccessibilityElement : UIAccessibilityElement
-
-- (nonnull instancetype)initWithAccessibilityContainer:(nonnull UIView *)container index:(NSInteger)index maxIndex:(NSInteger)maxIndex;
-
-@end
-
-NS_ASSUME_NONNULL_END
+    func testProperties() {
+        XCTAssertEqual(result.identifier, identifier)
+        XCTAssertEqual(result.isPasscodeSaved, true)
+        XCTAssertEqual(result.isTouchIdEnabled, false)
+    }
+    
+    func testIsEqual() {
+        result.startDate = date
+        result.endDate = date
+        
+        let newResult = ORKPasscodeResult(identifier: identifier)
+        newResult.isPasscodeSaved = true
+        newResult.isTouchIdEnabled = false
+        newResult.startDate = date
+        newResult.endDate = date
+        
+        XCTAssert(result.isEqual(result))
+    }
+}

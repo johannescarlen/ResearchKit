@@ -1,6 +1,7 @@
 /*
 Copyright (c) 2015, James Cox. All rights reserved.
 Copyright (c) 2015, Ricardo Sánchez-Sáez.
+Copyright (c) 2018, Brian Ganninger.
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
@@ -74,17 +75,21 @@ class ChartListViewController: UIViewController, UITableViewDataSource {
         self.tableView.dataSource = self;
         
         // ORKPieChartView
-        pieChartTableViewCell = tableView.dequeueReusableCell(withIdentifier: pieChartIdentifier) as! PieChartTableViewCell
+        pieChartTableViewCell = tableView.dequeueReusableCell(withIdentifier: pieChartIdentifier) as? PieChartTableViewCell
         let pieChartView = pieChartTableViewCell.pieChartView
         pieChartView?.dataSource = randomColorPieChartDataSource
         // Optional custom configuration
-
         pieChartView?.title = "TITLE"
         pieChartView?.text = "TEXT"
         pieChartView?.lineWidth = 1000
         pieChartView?.showsTitleAboveChart = true
         pieChartView?.showsPercentageLabels = false
         pieChartView?.drawsClockwise = false
+        pieChartView?.titleFont = UIFont.systemFont(ofSize: 20, weight: UIFont.Weight.bold)
+        pieChartView?.subtitleFont = UIFont.systemFont(ofSize: 18, weight: UIFont.Weight.thin)
+        pieChartView?.noDataFont = UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.black)
+        pieChartView?.percentageLabelFont = UIFont.systemFont(ofSize: 12, weight: UIFont.Weight.light)
+        pieChartView?.legendFont = UIFont.systemFont(ofSize: 8, weight: UIFont.Weight.heavy)
         executeAfterDelay(2.5) {
             pieChartView?.showsTitleAboveChart = false
             pieChartView?.lineWidth = 12
@@ -92,6 +97,11 @@ class ChartListViewController: UIViewController, UITableViewDataSource {
             pieChartView?.text = "UPDATED TEXT"
             pieChartView?.titleColor = UIColor.red
             pieChartView?.textColor = UIColor.orange
+            pieChartView?.titleFont = nil
+            pieChartView?.subtitleFont = nil
+            pieChartView?.noDataFont = nil
+            pieChartView?.percentageLabelFont = nil
+            pieChartView?.legendFont = nil
         }
         executeAfterDelay(3.5) {
             pieChartView?.drawsClockwise = true
@@ -100,14 +110,18 @@ class ChartListViewController: UIViewController, UITableViewDataSource {
         executeAfterDelay(4.5) {
             pieChartView?.showsPercentageLabels = true
             pieChartView?.tintColor = UIColor.purple
+            pieChartView?.percentageLabelFont = UIFont.systemFont(ofSize: 12, weight: UIFont.Weight.light)
+            pieChartView?.legendFont = UIFont.systemFont(ofSize: 8, weight: UIFont.Weight.heavy)
         }
         executeAfterDelay(5.5) {
             pieChartView?.titleColor = nil
             pieChartView?.textColor = nil
+            pieChartView?.percentageLabelFont = nil
+            pieChartView?.legendFont = nil
         }
 
         // ORKBarGraphChartView
-        barGraphChartTableViewCell = tableView.dequeueReusableCell(withIdentifier: barGraphChartIdentifier) as! BarGraphChartTableViewCell
+        barGraphChartTableViewCell = tableView.dequeueReusableCell(withIdentifier: barGraphChartIdentifier) as? BarGraphChartTableViewCell
         let barGraphChartView = barGraphChartTableViewCell.graphChartView as! ORKBarGraphChartView
         barGraphChartView.dataSource = barGraphChartDataSource
         executeAfterDelay(1.5) {
@@ -121,6 +135,10 @@ class ChartListViewController: UIViewController, UITableViewDataSource {
             barGraphChartView.referenceLineColor = UIColor.orange
             barGraphChartView.scrubberLineColor = UIColor.blue
             barGraphChartView.scrubberThumbColor = UIColor.green
+            barGraphChartView.xAxisFont = UIFont.systemFont(ofSize: 8, weight: UIFont.Weight.light)
+            barGraphChartView.yAxisFont = UIFont.systemFont(ofSize: 8, weight: UIFont.Weight.light)
+            barGraphChartView.noDataFont = UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.heavy)
+            barGraphChartView.scrubberFont = UIFont.systemFont(ofSize: 10, weight: UIFont.Weight.medium)
         }
         executeAfterDelay(3.5) {
             barGraphChartView.axisColor = nil
@@ -128,6 +146,10 @@ class ChartListViewController: UIViewController, UITableViewDataSource {
             barGraphChartView.referenceLineColor = nil
             barGraphChartView.scrubberLineColor = nil
             barGraphChartView.scrubberThumbColor = nil
+            barGraphChartView.xAxisFont = nil
+            barGraphChartView.yAxisFont = nil
+            barGraphChartView.noDataFont = nil
+            barGraphChartView.scrubberFont = nil
         }
         executeAfterDelay(4.5) {
             barGraphChartView.dataSource = self.coloredBarGraphChartDataSource
@@ -140,7 +162,7 @@ class ChartListViewController: UIViewController, UITableViewDataSource {
         }
 
         // ORKLineGraphChartView
-        lineGraphChartTableViewCell = tableView.dequeueReusableCell(withIdentifier: lineGraphChartIdentifier) as! LineGraphChartTableViewCell
+        lineGraphChartTableViewCell = tableView.dequeueReusableCell(withIdentifier: lineGraphChartIdentifier) as? LineGraphChartTableViewCell
         let lineGraphChartView = lineGraphChartTableViewCell.graphChartView as! ORKLineGraphChartView
         lineGraphChartView.dataSource = lineGraphChartDataSource
         // Optional custom configuration
@@ -155,6 +177,10 @@ class ChartListViewController: UIViewController, UITableViewDataSource {
             lineGraphChartView.referenceLineColor = UIColor.orange
             lineGraphChartView.scrubberLineColor = UIColor.blue
             lineGraphChartView.scrubberThumbColor = UIColor.green
+            lineGraphChartView.xAxisFont = UIFont.systemFont(ofSize: 8, weight: UIFont.Weight.light)
+            lineGraphChartView.yAxisFont = UIFont.systemFont(ofSize: 8, weight: UIFont.Weight.light)
+            lineGraphChartView.noDataFont = UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.heavy)
+            lineGraphChartView.scrubberFont = UIFont.systemFont(ofSize: 10, weight: UIFont.Weight.medium)
         }
         executeAfterDelay(3.5) {
             lineGraphChartView.axisColor = nil
@@ -165,6 +191,10 @@ class ChartListViewController: UIViewController, UITableViewDataSource {
         }
         executeAfterDelay(4.5) {
             lineGraphChartView.dataSource = self.coloredLineGraphChartDataSource
+            lineGraphChartView.xAxisFont = nil
+            lineGraphChartView.yAxisFont = nil
+            lineGraphChartView.noDataFont = nil
+            lineGraphChartView.scrubberFont = nil
         }
         executeAfterDelay(5.5) {
             let maximumValueImage = UIImage(named: "GraphMaximumValueTest")!
@@ -174,13 +204,17 @@ class ChartListViewController: UIViewController, UITableViewDataSource {
         }
         
         // ORKDiscreteGraphChartView
-        discreteGraphChartTableViewCell = tableView.dequeueReusableCell(withIdentifier: discreteGraphChartIdentifier) as! DiscreteGraphChartTableViewCell
+        discreteGraphChartTableViewCell = tableView.dequeueReusableCell(withIdentifier: discreteGraphChartIdentifier) as? DiscreteGraphChartTableViewCell
         let discreteGraphChartView = discreteGraphChartTableViewCell.graphChartView as! ORKDiscreteGraphChartView
         discreteGraphChartView.dataSource = discreteGraphChartDataSource
         // Optional custom configuration
         discreteGraphChartView.showsHorizontalReferenceLines = true
         discreteGraphChartView.showsVerticalReferenceLines = true
         discreteGraphChartView.drawsConnectedRanges = true
+        discreteGraphChartView.xAxisFont = UIFont.systemFont(ofSize: 9, weight: UIFont.Weight.thin)
+        discreteGraphChartView.yAxisFont = UIFont.systemFont(ofSize: 8, weight: UIFont.Weight.light)
+        discreteGraphChartView.noDataFont = UIFont.systemFont(ofSize: 16, weight: UIFont.Weight.heavy)
+        discreteGraphChartView.scrubberFont = UIFont.systemFont(ofSize: 10, weight: UIFont.Weight.medium)
         executeAfterDelay(2.5) {
             discreteGraphChartView.tintColor = UIColor.purple
         }
@@ -189,6 +223,10 @@ class ChartListViewController: UIViewController, UITableViewDataSource {
         }
         executeAfterDelay(4.5) {
             discreteGraphChartView.dataSource = self.coloredDiscreteGraphChartDataSource
+            discreteGraphChartView.xAxisFont = nil
+            discreteGraphChartView.yAxisFont = nil
+            discreteGraphChartView.noDataFont = nil
+            discreteGraphChartView.scrubberFont = nil
         }
         executeAfterDelay(5.5) {
             discreteGraphChartView.drawsConnectedRanges = true
@@ -238,7 +276,7 @@ class ChartPerformanceListViewController: UIViewController, UITableViewDataSourc
         self.tableView.dataSource = self;
         
         // ORKLineGraphChartView
-        lineGraphChartTableViewCell = tableView.dequeueReusableCell(withIdentifier: lineGraphChartIdentifier) as! LineGraphChartTableViewCell
+        lineGraphChartTableViewCell = tableView.dequeueReusableCell(withIdentifier: lineGraphChartIdentifier) as? LineGraphChartTableViewCell
         let lineGraphChartView = lineGraphChartTableViewCell.graphChartView as! ORKLineGraphChartView
         lineGraphChartView.dataSource = graphChartDataSource
         // Optional custom configuration
@@ -246,7 +284,7 @@ class ChartPerformanceListViewController: UIViewController, UITableViewDataSourc
         lineGraphChartView.showsVerticalReferenceLines = true
 
         // ORKDiscreteGraphChartView
-        discreteGraphChartTableViewCell = tableView.dequeueReusableCell(withIdentifier: discreteGraphChartIdentifier) as! DiscreteGraphChartTableViewCell
+        discreteGraphChartTableViewCell = tableView.dequeueReusableCell(withIdentifier: discreteGraphChartIdentifier) as? DiscreteGraphChartTableViewCell
         let discreteGraphChartView = discreteGraphChartTableViewCell.graphChartView as! ORKDiscreteGraphChartView
         discreteGraphChartView.dataSource = graphChartDataSource
         // Optional custom configuration

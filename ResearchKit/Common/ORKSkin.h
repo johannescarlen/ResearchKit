@@ -30,7 +30,7 @@
 
 
 @import UIKit;
-#import "ORKDefines.h"
+#import <ResearchKit/ORKDefines.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -187,10 +187,10 @@ typedef NS_ENUM(NSInteger, ORKScreenMetric) {
 
 typedef NS_ENUM(NSInteger, ORKScreenType) {
     ORKScreenTypeiPhoneX,
+    ORKScreenTypeiPhoneXSMax,
     ORKScreenTypeiPhone6Plus,
     ORKScreenTypeiPhone6,
     ORKScreenTypeiPhone5,
-    ORKScreenTypeiPhone4,
     ORKScreenTypeiPad,
     ORKScreenTypeiPad10_5,
     ORKScreenTypeiPad12_9,

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2015, Apple Inc. All rights reserved.
+ Copyright (c) 2019, Apple Inc. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
@@ -28,39 +28,34 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "ORKLineGraphAccessibilityElement.h"
+import XCTest
 
+class ORKSignatureResultTests: XCTestCase {
+    var result: ORKSignatureResult!
+    var image: UIImage!
+    var path: UIBezierPath!
+    let date = Date()
 
-@interface ORKLineGraphAccessibilityElement()
-
-@property (assign, nonatomic) NSInteger index;
-@property (assign, nonatomic) NSInteger maxIndex;
-
-@end
-
-
-@implementation ORKLineGraphAccessibilityElement
-
-- (nonnull instancetype)initWithAccessibilityContainer:(nonnull UIView *)container index:(NSInteger)index maxIndex:(NSInteger)maxIndex {
-    self = [super initWithAccessibilityContainer:container];
-    if (self) {
-        self.index = index;
-        self.maxIndex = maxIndex;
+    override func setUp() {
+        let bundle = Bundle(identifier: "org.researchkit.ResearchKit")
+        image = UIImage(named: "heartbeat", in: bundle, compatibleWith: .none)
+        path = UIBezierPath(rect: CGRect(x: 0, y: 0, width: 50, height: 50))
+        result = ORKSignatureResult(signatureImage: image, signaturePath: [path])
     }
-    return self;
-}
 
-- (CGRect)accessibilityFrame {
-    if (self.maxIndex == 0) {
-        return [super accessibilityFrame];
+    func testProperties() {
+        XCTAssertEqual(result.signatureImage, image)
+        XCTAssertEqual(result.signaturePath, [path])
     }
     
-    CGRect containerFrame = [self.accessibilityContainer frame];
-    CGFloat height = CGRectGetHeight(containerFrame);
-    CGFloat width = CGRectGetWidth(containerFrame) / self.maxIndex;
-    CGFloat x = self.index * width;
-    
-    return UIAccessibilityConvertFrameToScreenCoordinates(CGRectMake(x, 0, width, height), self.accessibilityContainer);
+    func testIsEqual() {
+        result.startDate = date
+        result.endDate = date
+        
+        let newResult = ORKSignatureResult(signatureImage: image, signaturePath: [path])
+        newResult.startDate = date
+        newResult.endDate = date
+        
+        XCTAssert(result.isEqual(newResult))
+    }
 }
-
-@end
