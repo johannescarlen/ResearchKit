@@ -735,10 +735,12 @@ static const CGFloat DelayBeforeAutoScroll = 0.25;
     BOOL multiCellChoices = ([singleSectionTypes containsObject:@(answerFormat.questionType)] &&
                              NO == [answerFormat isKindOfClass:[ORKValuePickerAnswerFormat class]]);
 
+    BOOL multilineTextEntry = (answerFormat.questionType == ORKQuestionTypeText && [(ORKTextAnswerFormat *)answerFormat multipleLines]);
+
     BOOL scale = (answerFormat.questionType == ORKQuestionTypeScale);
     
     // Items require individual section
-    if (multiCellChoices || scale) {
+    if (multiCellChoices || multilineTextEntry || scale) {
         return YES;
     }
     
