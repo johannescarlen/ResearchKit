@@ -710,7 +710,24 @@ static const CGFloat DelayBeforeAutoScroll = 0.25;
 
 - (ORKTableSection *)createSectionWithItem:(ORKFormItem *)item {
     ORKTableSection *section = [[ORKTableSection alloc]  initWithSectionIndex:_sections.count];
-    section.title = item.text;
+
+    ORKAnswerFormat *answerFormat = item.answerFormat;
+
+    NSArray *formatsWithTitle = @[ @(ORKQuestionTypeBoolean),
+                                   @(ORKQuestionTypeScale),
+                                   @(ORKQuestionTypeSingleChoice),
+                                   @(ORKQuestionTypeMultipleChoice),
+                                   @(ORKQuestionTypeMultiplePicker) ];
+
+    BOOL choiceEntry = ([formatsWithTitle containsObject:@(answerFormat.questionType)] &&
+                             NO == [answerFormat isKindOfClass:[ORKValuePickerAnswerFormat class]]);
+
+    BOOL multilineTextEntry = (answerFormat.questionType == ORKQuestionTypeText && [(ORKTextAnswerFormat *)answerFormat multipleLines]);
+
+    if (choiceEntry || multilineTextEntry) {
+        section.title = item.text;
+    }
+
     section.detailText = item.detailText;
     section.learnMoreItem = item.learnMoreItem;
     section.showsProgress = item.showsProgress;
@@ -720,31 +737,7 @@ static const CGFloat DelayBeforeAutoScroll = 0.25;
 }
 
 - (BOOL)doesItemRequireSingleSection:(ORKFormItem *)item {
-    if (item.impliedAnswerFormat == nil) {
-        return NO;
-    }
-    
-    ORKAnswerFormat *answerFormat = [item impliedAnswerFormat];
-    
-    NSArray *singleSectionTypes = @[@(ORKQuestionTypeBoolean),
-                                    @(ORKQuestionTypeSingleChoice),
-                                    @(ORKQuestionTypeMultipleChoice),
-                                    @(ORKQuestionTypeLocation),
-                                    @(ORKQuestionTypeSES)];
-    
-    BOOL multiCellChoices = ([singleSectionTypes containsObject:@(answerFormat.questionType)] &&
-                             NO == [answerFormat isKindOfClass:[ORKValuePickerAnswerFormat class]]);
-
-    BOOL multilineTextEntry = (answerFormat.questionType == ORKQuestionTypeText && [(ORKTextAnswerFormat *)answerFormat multipleLines]);
-
-    BOOL scale = (answerFormat.questionType == ORKQuestionTypeScale);
-    
-    // Items require individual section
-    if (multiCellChoices || multilineTextEntry || scale) {
-        return YES;
-    }
-    
-    return NO;
+    return YES;
 }
 
 - (NSInteger)numberOfAnsweredFormItemsInDictionary:(NSDictionary *)dictionary {
