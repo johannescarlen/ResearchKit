@@ -38,10 +38,10 @@
 
 #import "ORKHelpers_Internal.h"
 #import "ORKSkin.h"
-
+#import <WebKit/WebKit.h>
 
 static const CGFloat iPadStepTitleLabelFontSize = 50.0;
-@interface ORKConsentReviewController () <UIWebViewDelegate, UIScrollViewDelegate>
+@interface ORKConsentReviewController () <WKNavigationDelegate, UIScrollViewDelegate>
 
 @end
 
@@ -89,14 +89,14 @@ static const CGFloat iPadStepTitleLabelFontSize = 50.0;
         [self.navigationController.navigationBar setBarTintColor:self.view.backgroundColor];
     }
     
-    _webView = [UIWebView new];
+    _webView = [WKWebView new];
     [_webView loadHTMLString:_htmlString baseURL:ORKCreateRandomBaseURL()];
     _webView.backgroundColor = ORKColor(ORKConsentBackgroundColorKey);
     _webView.scrollView.backgroundColor = ORKColor(ORKConsentBackgroundColorKey);
     if (!_agreeButton.isEnabled) {
         _webView.scrollView.delegate = self;
     }
-    _webView.delegate = self;
+
     [_webView setClipsToBounds:YES];
     _webView.translatesAutoresizingMaskIntoConstraints = NO;
     _toolbar.translatesAutoresizingMaskIntoConstraints = NO;
@@ -215,22 +215,6 @@ static const CGFloat iPadStepTitleLabelFontSize = 50.0;
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-    if (navigationType != UIWebViewNavigationTypeOther) {
-        [[UIApplication sharedApplication] openURL:request.URL];
-        return NO;
-    }
-    return YES;
-}
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView {
-    //need a delay here because of a race condition where the webview may not have fully rendered by the time this is called in which case scrolledToBottom returns YES because everything == 0
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if (!_agreeButton.isEnabled && [self scrolledToBottom:_webView.scrollView]) {
-            [_agreeButton setEnabled:YES];
-        }
-    });
-}
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (!_agreeButton.isEnabled && [self scrolledToBottom:scrollView]) {

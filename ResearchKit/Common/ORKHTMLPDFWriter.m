@@ -33,7 +33,7 @@
 #import "ORKHTMLPDFPageRenderer.h"
 
 #import "ORKHelpers_Internal.h"
-
+#import <WebKit/WebKit.h>
 
 #define ORKPPI 72
 #define ORKSizeMakeWithPPI(width, height) CGSizeMake(width * ORKPPI, height * ORKPPI)
@@ -47,13 +47,13 @@ static const CGFloat LetterHeight = 11.0f;
 
 
 
-@interface ORKHTMLPDFWriter () <UIWebViewDelegate> {
+@interface ORKHTMLPDFWriter () <WKUIDelegate, WKNavigationDelegate> {
     id _selfRetain;
 }
 
 @property (nonatomic) CGSize pageSize;
 @property (nonatomic) UIEdgeInsets pageMargins;
-@property (nonatomic, strong) UIWebView *webView;
+@property (nonatomic, strong) WKWebView *wkWebView;
 @property (nonatomic, strong) NSData *data;
 @property (nonatomic, copy) NSError *error;
 @property (nonatomic, copy) void (^completionBlock)(NSData *data, NSError *error);
@@ -75,9 +75,9 @@ static const CGFloat PageEdge = 72.0 / 4;
     _data = nil;
     _error = nil;
     
-    self.webView = [[UIWebView alloc] init];
-    self.webView.delegate = self;
-    [self.webView loadHTMLString:html baseURL:ORKCreateRandomBaseURL()];
+    self.wkWebView = [[WKWebView alloc] init];
+    self.wkWebView.UIDelegate = self;
+    [self.wkWebView loadHTMLString:html baseURL:ORKCreateRandomBaseURL()];
     
     _selfRetain = self;
     self.completionBlock = completionBlock;
@@ -90,11 +90,11 @@ static const CGFloat PageEdge = 72.0 / 4;
 }
 
 - (void)savePDF {
-    if (!self.webView) {
+    if (!self.wkWebView) {
         return;
     }
     
-    UIPrintFormatter *formatter = self.webView.viewPrintFormatter;
+    UIPrintFormatter *formatter = self.wkWebView.viewPrintFormatter;
     
     ORKHTMLPDFPageRenderer *renderer = self.printRenderer;
     if (renderer == nil) {
@@ -127,7 +127,7 @@ static const CGFloat PageEdge = 72.0 / 4;
     
     _data = currentReportData;
     
-    self.webView = nil;
+    self.wkWebView = nil;
     
     self.completionBlock(_data, nil);
     _selfRetain = nil;
@@ -141,29 +141,12 @@ static const CGFloat PageEdge = 72.0 / 4;
     return pageSize;
 }
 
-#pragma mark - UIWebViewDelegate
+#pragma mark - WKUIDelegate
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView {
-    NSString *readyState = [webView stringByEvaluatingJavaScriptFromString:@"document.readyState"];
-    BOOL complete = [readyState isEqualToString:@"complete"];
-    
-    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(timeout) object:nil];
-    
-    if (complete) {
-        [self savePDF];
-    } else {
-        [self performSelector:@selector(timeout) withObject:nil afterDelay:1.0f];
-    }
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
 }
 
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-    [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(timeout) object:nil];
-    
-    _error = error;
-    self.webView = nil;
-    
-    self.completionBlock(nil, error);
-    _selfRetain = nil;
+-(void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
 }
 
 @end
