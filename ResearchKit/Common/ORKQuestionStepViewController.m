@@ -921,8 +921,6 @@ static NSString *const _ORKOriginalAnswerRestoreKey = @"originalAnswer";
     [self answerDidChange];
 }
 
-//FIXME: Need Accessibility for Continue and skip button. Lost support when moved navigationFooterViewView outside VerticalContainerView.
-
 //    if (_navigationFooterView.continueButton != nil) {
 //        [elements addObject:self.continueSkipContainer.continueButton];
 //    }
